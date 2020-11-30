@@ -24,8 +24,8 @@ func resample(p,n):
 	var D= 0.0
 	var n_p=[]
 	n_p.append(p[0])
-	vr.log_info("unr before " +str(p))
-	vr.log_info("unr before size " +str(p.size()))
+#	vr.log_info("unr before " +str(p))
+#	vr.log_info("unr before size " +str(p.size()))
 	for i in range(1,p.size()):
 		if p[i][1] == p[i-1][1]:
 			var d = distance(p[i-1][0],p[i][0])
@@ -39,10 +39,10 @@ func resample(p,n):
 				D+=d
 	if n_p.size()==p.size()-1:
 		n_p.append(make_point(p[p.size()-1][0],p[p.size()-1][1]))
-	vr.log_info("unr after" +str(p))
-	vr.log_info("unr after size " +str(p.size()))
-	vr.log_info("res " +str(n_p))
-	vr.log_info("res size " +str(n_p.size()))
+#	vr.log_info("unr after" +str(p))
+#	vr.log_info("unr after size " +str(p.size()))
+#	vr.log_info("res " +str(n_p))
+#	vr.log_info("res size " +str(n_p.size()))
 	return n_p
 func pthl(p):
 	var d=0
@@ -96,7 +96,6 @@ func recognize(points):
 		if d<b:
 			b=d
 			u=i
-	vr.log_info("reached")
 	if u == -1:
 		return ["no match",0.0]
 	else:
@@ -122,7 +121,7 @@ func cldmatch(candidate, template, minsof):
 	for i in range(0,candidate.size(),step):
 		var m1=cldd(candidate[1],template[1],i)
 		var m2=cldd(template[1],candidate[1],i)
-		vr.log_info("cloud_distance " + str(m1)+ ","+ str(m2))
+#		vr.log_info("cloud_distance " + str(m1)+ ","+ str(m2))
 		minsof=min(m1,m2)
 	return minsof
 var m=0
@@ -202,12 +201,12 @@ func _physics_process(delta):
 	var info = get_parent().get_parent().get_parent().get_node("OQ_UILabel")
 	var click = controller._button_pressed(track_button)
 	var release = controller._button_just_released(track_button)
-	info.set_label_text("state =" + "\n add mode ="  + str(add_mode) + "\n" + action[user_state] + "\n click =" +str(click) + " \n release = " + str(release))
+	info.set_label_text("state ="+ action[user_state]   + "\n add mode =" + str(add_mode)  + "\n click =" +str(click) + " \n release = " + str(release))
 	var id_count=0
-	if Input.is_action_just_pressed("add_mode"):
-		add_mode=true
-		add_name="type " + str(id_count)
-		id_count+=1
+#	if Input.is_action_just_pressed("add_mode"):
+#		add_mode=true
+#		add_name="type " + str(id_count)
+#		id_count+=1
 	match user_state:
 		ACTION.IDLE:
 			if click:
