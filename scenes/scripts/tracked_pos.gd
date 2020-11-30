@@ -126,9 +126,8 @@ func cldmatch(candidate, template, minsof):
 	return minsof
 var m=0
 func cldd(a,b,start):
-	vr.log_info("number "+str(start))
 	var matched=[]
-	vr.log_info("size of a= " + str(a.size()) + " b= " + str(b.size()))
+#	vr.log_info("size of a= " + str(a.size()) + " b= " + str(b.size()))
 	var n = min(a.size(),b.size())
 	matched.resize(n)
 	for j in range(matched.size()):
@@ -139,7 +138,6 @@ func cldd(a,b,start):
 		var u=-1;
 		var _min=INF
 		for j in range(0,matched.size()):
-			vr.log_info("yes")
 			if matched[j]==false:
 				var d = distance(a[i][0],b[j][0])
 				if d<_min:
@@ -152,7 +150,7 @@ func cldd(a,b,start):
 		if i==start:
 			break
 	
-	vr.log_info("cloud_calculation for m"+str((m%2)+1)+" = "+str(sum))
+#	vr.log_info("cloud_calculation for m"+str((m%2)+1)+" = "+str(sum))
 	m+=1
 	return sum
 func distance(a,b):
@@ -185,6 +183,7 @@ var user_state=ACTION.IDLE
 var add_name
 var controller : ARVRController = null;
 var add_mode=false
+var info
 func display_templates():
 	pass
 	for i in p_c:
@@ -192,21 +191,20 @@ func display_templates():
 		for j in i[1]:
 			vr.log_info(str(j[0]))
 	# shows names of the avaiable/added templates
+
 func _ready():
 	controller = get_parent();
+	
 	#gets parent as ARVR contoller and sets it to controller needed for button press recong
 	# can be modified 
+	info = get_parent().get_parent().get_parent().get_node("OQ_UILabel")
+	# current path to the label can be modified 
 var point_array=[]
 func _physics_process(delta):
-	var info = get_parent().get_parent().get_parent().get_node("OQ_UILabel")
 	var click = controller._button_pressed(track_button)
 	var release = controller._button_just_released(track_button)
 	info.set_label_text("state ="+ action[user_state]   + "\n add mode =" + str(add_mode)  + "\n click =" +str(click) + " \n release = " + str(release))
 	var id_count=0
-#	if Input.is_action_just_pressed("add_mode"):
-#		add_mode=true
-#		add_name="type " + str(id_count)
-#		id_count+=1
 	match user_state:
 		ACTION.IDLE:
 			if click:
