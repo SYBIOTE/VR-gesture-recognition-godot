@@ -7,7 +7,7 @@ export var ui_mesh_length := 1.0;
 export var adjust_left_right := true;
 
 export(vr.CONTROLLER_BUTTON) var ui_raycast_visible_button := vr.CONTROLLER_BUTTON.TOUCH_INDEX_TRIGGER;
-export(vr.CONTROLLER_BUTTON) var ui_raycast_click_button := vr.CONTROLLER_BUTTON.INDEX_TRIGGER;
+export(vr.CONTROLLER_BUTTON) var ui_raycast_click_button := vr.CONTROLLER_BUTTON.XA;
 
 var controller : ARVRController = null;
 onready var ui_raycast_position : Spatial = $RayCastPosition;

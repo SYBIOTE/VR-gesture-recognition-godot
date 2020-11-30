@@ -4,7 +4,7 @@
 extends Node
 
 var room_list = [
-	"res://main.tscn",
+	"res://scenes/main.tscn"
 	]
 
 var current_room = 0;
