@@ -155,10 +155,6 @@ func cldd(a,b,start):
 	return sum
 func distance(a,b):
 	return (sqrt(pow(b.x-a.x,2)+pow(b.y-a.y,2)+pow(b.z-a.z,2)))
-func display_cloud(_name,point_cloud):
-	vr_log_info(" "+_name+"\n")
-	for i in point_cloud[1]:
-		vr_log_info(str(i[0])) 
 #############################################################################
 #the interface starts here
 #############################################################################
@@ -184,13 +180,6 @@ var add_name
 var controller : ARVRController = null;
 var add_mode=false
 var info
-func display_templates():
-	for i in p_c:
-		vr_log_info(i[0])
-		for j in i[1]:
-			vr_log_info(str(j[0]))
-	# shows names of the avaiable/added templates
-
 func _ready():
 	controller = get_parent();
 	
