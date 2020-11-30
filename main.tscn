@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://vr_player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://texture_01.png" type="Texture" id=2]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 10, 1, 10 )
+subdivide_width = 1
+subdivide_height = 1
+subdivide_depth = 1
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_world_triplanar = true
+albedo_texture = ExtResource( 2 )
+emission_enabled = true
+emission = Color( 0, 0, 0, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
+emission_texture = ExtResource( 2 )
+uv1_scale = Vector3( 0.5, 0.5, 0.5 )
+uv1_triplanar = true
+
+[sub_resource type="ConcavePolygonShape" id=3]
+data = PoolVector3Array( -5, 0.5, 5, 0, 0.5, 5, -5, 0, 5, 0, 0.5, 5, 0, 0, 5, -5, 0, 5, 5, 0.5, -5, 0, 0.5, -5, 5, 0, -5, 0, 0.5, -5, 0, 0, -5, 5, 0, -5, 0, 0.5, 5, 5, 0.5, 5, 0, 0, 5, 5, 0.5, 5, 5, 0, 5, 0, 0, 5, 0, 0.5, -5, -5, 0.5, -5, 0, 0, -5, -5, 0.5, -5, -5, 0, -5, 0, 0, -5, -5, 0, 5, 0, 0, 5, -5, -0.5, 5, 0, 0, 5, 0, -0.5, 5, -5, -0.5, 5, 5, 0, -5, 0, 0, -5, 5, -0.5, -5, 0, 0, -5, 0, -0.5, -5, 5, -0.5, -5, 0, 0, 5, 5, 0, 5, 0, -0.5, 5, 5, 0, 5, 5, -0.5, 5, 0, -0.5, 5, 0, 0, -5, -5, 0, -5, 0, -0.5, -5, -5, 0, -5, -5, -0.5, -5, 0, -0.5, -5, 5, 0.5, 5, 5, 0.5, 0, 5, 0, 5, 5, 0.5, 0, 5, 0, 0, 5, 0, 5, -5, 0.5, -5, -5, 0.5, 0, -5, 0, -5, -5, 0.5, 0, -5, 0, 0, -5, 0, -5, 5, 0.5, 0, 5, 0.5, -5, 5, 0, 0, 5, 0.5, -5, 5, 0, -5, 5, 0, 0, -5, 0.5, 0, -5, 0.5, 5, -5, 0, 0, -5, 0.5, 5, -5, 0, 5, -5, 0, 0, 5, 0, 5, 5, 0, 0, 5, -0.5, 5, 5, 0, 0, 5, -0.5, 0, 5, -0.5, 5, -5, 0, -5, -5, 0, 0, -5, -0.5, -5, -5, 0, 0, -5, -0.5, 0, -5, -0.5, -5, 5, 0, 0, 5, 0, -5, 5, -0.5, 0, 5, 0, -5, 5, -0.5, -5, 5, -0.5, 0, -5, 0, 0, -5, 0, 5, -5, -0.5, 0, -5, 0, 5, -5, -0.5, 5, -5, -0.5, 0, 5, 0.5, 5, 0, 0.5, 5, 5, 0.5, 0, 0, 0.5, 5, 0, 0.5, 0, 5, 0.5, 0, -5, -0.5, 5, 0, -0.5, 5, -5, -0.5, 0, 0, -0.5, 5, 0, -0.5, 0, -5, -0.5, 0, 0, 0.5, 5, -5, 0.5, 5, 0, 0.5, 0, -5, 0.5, 5, -5, 0.5, 0, 0, 0.5, 0, 0, -0.5, 5, 5, -0.5, 5, 0, -0.5, 0, 5, -0.5, 5, 5, -0.5, 0, 0, -0.5, 0, 5, 0.5, 0, 0, 0.5, 0, 5, 0.5, -5, 0, 0.5, 0, 0, 0.5, -5, 5, 0.5, -5, -5, -0.5, 0, 0, -0.5, 0, -5, -0.5, -5, 0, -0.5, 0, 0, -0.5, -5, -5, -0.5, -5, 0, 0.5, 0, -5, 0.5, 0, 0, 0.5, -5, -5, 0.5, 0, -5, 0.5, -5, 0, 0.5, -5, 0, -0.5, 0, 5, -0.5, 0, 0, -0.5, -5, 5, -0.5, 0, 5, -0.5, -5, 0, -0.5, -5 )
+
+[node name="main" type="Spatial"]
+
+[node name="floor" type="MeshInstance" parent="."]
+mesh = SubResource( 1 )
+material/0 = SubResource( 2 )
+
+[node name="StaticBody" type="StaticBody" parent="floor"]
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="floor/StaticBody"]
+visible = false
+shape = SubResource( 3 )
+
+[node name="vr_player" parent="." instance=ExtResource( 1 )]
