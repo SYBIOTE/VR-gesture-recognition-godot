@@ -24,8 +24,8 @@ func resample(p,n):
 	var D= 0.0
 	var n_p=[]
 	n_p.append(p[0])
-#	vr.log_info("unr before " +str(p))
-#	vr.log_info("unr before size " +str(p.size()))
+#	#vr_log_info("unr before " +str(p))
+#	#vr_log_info("unr before size " +str(p.size()))
 	for i in range(1,p.size()):
 		if p[i][1] == p[i-1][1]:
 			var d = distance(p[i-1][0],p[i][0])
@@ -39,10 +39,10 @@ func resample(p,n):
 				D+=d
 	if n_p.size()==p.size()-1:
 		n_p.append(make_point(p[p.size()-1][0],p[p.size()-1][1]))
-#	vr.log_info("unr after" +str(p))
-#	vr.log_info("unr after size " +str(p.size()))
-#	vr.log_info("res " +str(n_p))
-#	vr.log_info("res size " +str(n_p.size()))
+#	#vr_log_info("unr after" +str(p))
+#	#vr_log_info("unr after size " +str(p.size()))
+#	#vr_log_info("res " +str(n_p))
+#	#vr_log_info("res size " +str(n_p.size()))
 	return n_p
 func pthl(p):
 	var d=0
@@ -92,7 +92,7 @@ func recognize(points):
 	var b = INF
 	for i in range(p_c.size()):
 		var d = cldmatch(candidate,p_c[i],b)
-		vr.log_info("score for template "+str(i)+" = "+str(d))
+		#vr_log_info("score for template "+str(i)+" = "+str(d))
 		if d<b:
 			b=d
 			u=i
@@ -103,7 +103,7 @@ func recognize(points):
 			b=1.0/b
 		else: 
 			b=1.0
-		vr.log_info("made score")
+		#vr_log_info("made score")
 		var n=p_c[u][0]
 		return [n,b]
 func add_gesture(nme, pts):
@@ -121,13 +121,13 @@ func cldmatch(candidate, template, minsof):
 	for i in range(0,candidate.size(),step):
 		var m1=cldd(candidate[1],template[1],i)
 		var m2=cldd(template[1],candidate[1],i)
-#		vr.log_info("cloud_distance " + str(m1)+ ","+ str(m2))
+#		#vr_log_info("cloud_distance " + str(m1)+ ","+ str(m2))
 		minsof=min(m1,m2)
 	return minsof
 var m=0
 func cldd(a,b,start):
 	var matched=[]
-#	vr.log_info("size of a= " + str(a.size()) + " b= " + str(b.size()))
+#	#vr_log_info("size of a= " + str(a.size()) + " b= " + str(b.size()))
 	var n = min(a.size(),b.size())
 	matched.resize(n)
 	for j in range(matched.size()):
@@ -150,15 +150,15 @@ func cldd(a,b,start):
 		if i==start:
 			break
 	
-#	vr.log_info("cloud_calculation for m"+str((m%2)+1)+" = "+str(sum))
+#	#vr_log_info("cloud_calculation for m"+str((m%2)+1)+" = "+str(sum))
 	m+=1
 	return sum
 func distance(a,b):
 	return (sqrt(pow(b.x-a.x,2)+pow(b.y-a.y,2)+pow(b.z-a.z,2)))
 func display_cloud(_name,point_cloud):
-	vr.log_info(" "+_name+"\n")
+	vr_log_info(" "+_name+"\n")
 	for i in point_cloud[1]:
-		vr.log_info(str(i[0])) 
+		vr_log_info(str(i[0])) 
 #############################################################################
 #the interface starts here
 #############################################################################
@@ -185,11 +185,10 @@ var controller : ARVRController = null;
 var add_mode=false
 var info
 func display_templates():
-	pass
 	for i in p_c:
-		vr.log_info(i[0])
+		vr_log_info(i[0])
 		for j in i[1]:
-			vr.log_info(str(j[0]))
+			vr_log_info(str(j[0]))
 	# shows names of the avaiable/added templates
 
 func _ready():
@@ -216,7 +215,7 @@ func _physics_process(delta):
 			point_array.append(make_point(global_transform.origin,controller.controller_id))
 			if release:
 				var result=recognize(point_array)
-				vr.log_info("result"+str(result[0])+" score "+str(result[1]))
+				#vr_log_info("result"+str(result[0])+" score "+str(result[1]))
 				get_parent().get_parent().get_parent().result(str(result[0]))
 				point_array.clear()
 				user_state=ACTION.IDLE
@@ -225,7 +224,7 @@ func _physics_process(delta):
 			point_array.append(make_point(global_transform.origin,controller.controller_id))
 			info.set_label_text("state =" + "\n add mode =" +  "\n" + str(add_mode)+ action[user_state] + "\n click =" +str(click) + " \n release = " + str(release))
 			if release:
-				vr.log_info(" add_name = "+ add_name)
+				#vr_log_info(" add_name = "+ add_name)
 				add_gesture(add_name,point_array)
 #				display_templates()
 				point_array.clear()
