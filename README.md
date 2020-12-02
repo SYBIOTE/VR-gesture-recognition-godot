@@ -20,3 +20,6 @@ there are no pre made templates
 the add button , puts the user in add mode
 the next tracked movement will be made into a template
 
+the cancel button allows the user to exit add mode
+
+the delete button deletes all templates
