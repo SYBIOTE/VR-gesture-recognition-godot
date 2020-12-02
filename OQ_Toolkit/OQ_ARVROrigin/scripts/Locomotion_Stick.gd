@@ -121,7 +121,7 @@ func turn(dt):
 		last_click_rotate = true;
 		var dsign = sign(dlr);
 		vr.vrOrigin.rotate_y(dsign * deg2rad(click_turn_angle));
-			
+		
 	# smooth turning
 	elif (turn_type == vr.LocomotionStickTurnType.SMOOTH):
 		if (enable_vignette) : movement_vignette_rect.visible = true;

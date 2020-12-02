@@ -7,7 +7,10 @@ const NumPoints = 32
 func make_point(vec,ID):
 	var point = []
 	point.resize(2)
-	point[0]=vec
+	if vec is Vector3:
+		point[0]=vec
+	if vec is Transform:
+		point[0]=vec.origin
 	point[1]=ID
 	return point
 func make_cloud(nm,pt):
@@ -29,7 +32,7 @@ func resample(p,n):
 	for i in range(1,p.size()):
 		if p[i][1] == p[i-1][1]:
 			var d = distance(p[i-1][0],p[i][0])
-			if D+d >= I:
+			if D+d >= I and d!=0:
 				var qvec = p[i-1][0] + ((I-D)/d)*(p[i][0]-p[i-1][0])
 				var q = make_point(qvec,p[i][1])
 				n_p.append(q)
@@ -179,19 +182,27 @@ var user_state=ACTION.IDLE
 var add_name
 var controller : ARVRController = null;
 var add_mode=false
-var info
+onready var state_info = $OQ_VisibilityToggle/OQ_UILabel
+onready var result_info=$OQ_VisibilityToggle/OQ_UILabel2
+var point_array=[]
+func result(result):
+	result_info.set_label_text("matched with " + str(result[0]) +"\n score " +str(result[1]))
+
 func _ready():
 	controller = get_parent();
-	
+	if controller==vr.leftController:
+		rotate_y(deg2rad(45))
+	elif controller==vr.rightController:
+		rotate_y(deg2rad(-45))
 	#gets parent as ARVR contoller and sets it to controller needed for button press recong
 	# can be modified 
-	info = get_parent().get_parent().get_parent().get_node("OQ_UILabel")
+	
 	# current path to the label can be modified 
-var point_array=[]
+
 func _physics_process(delta):
 	var click = controller._button_pressed(track_button)
 	var release = controller._button_just_released(track_button)
-	info.set_label_text("state ="+ action[user_state]   + "\n add mode =" + str(add_mode)  + "\n click =" +str(click) + " \n release = " + str(release))
+	state_info.set_label_text("state ="+ action[user_state]   + "\n add mode =" + str(add_mode))
 	var id_count=0
 	match user_state:
 		ACTION.IDLE:
@@ -201,17 +212,17 @@ func _physics_process(delta):
 				else:
 					user_state=ACTION.RECOGNIZE
 		ACTION.RECOGNIZE:
-			point_array.append(make_point(global_transform.origin,controller.controller_id))
+			point_array.append(make_point(global_transform,controller.controller_id))
 			if release:
 				var result=recognize(point_array)
 				#vr_log_info("result"+str(result[0])+" score "+str(result[1]))
-				get_parent().get_parent().get_parent().result(str(result[0]))
+				result(result)
 				point_array.clear()
 				user_state=ACTION.IDLE
 				#stop tracking ,recogize pool
 		ACTION.ADD:
-			point_array.append(make_point(global_transform.origin,controller.controller_id))
-			info.set_label_text("state =" + "\n add mode =" +  "\n" + str(add_mode)+ action[user_state] + "\n click =" +str(click) + " \n release = " + str(release))
+			point_array.append(make_point(global_transform,controller.controller_id))
+			state_info.set_label_text("state =" + "\n add mode =" +  "\n" + str(add_mode)+ action[user_state] )
 			if release:
 				#vr_log_info(" add_name = "+ add_name)
 				add_gesture(add_name,point_array)
@@ -220,3 +231,16 @@ func _physics_process(delta):
 				user_state=ACTION.IDLE
 				add_mode=false
 				add_name=null
+var id_count=1
+func _on_add_pressed():
+	add_mode=true
+	add_name="type " + str(id_count)
+	id_count+=1
+	result_info.set_label_text(add_name + " added")
+
+func _on_delete_pressed():
+	result_info.set_label_text("all gestures deleted")
+	delete_gesture()
+	id_count=1
+
+

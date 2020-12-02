@@ -5,10 +5,12 @@ export var text := "I am a Label\nWith a new line"
 export var margin := 16;
 export var billboard := false;
 export var depth_test := true;
-
+enum Align {LEFT,CENTER,RIGHT,FILL}
+enum VAlign {TOP,CENTER,BOTTOM,FILL}
 enum ResizeModes {AUTO_RESIZE, FIXED}
 export (ResizeModes) var resize_mode := ResizeModes.AUTO_RESIZE
-
+export (Align) var align  
+export(VAlign) var valign 
 export var font_size_multiplier := 1.0
 export (Color) var font_color := Color(1,1,1,1);
 export (Color) var background_color := Color(0,0,0,1);
@@ -44,7 +46,8 @@ func _ready():
 	
 	ui_label.add_color_override("font_color", font_color)
 	ui_color_rect.color = background_color
-	
+	ui_label.align=align
+	ui_label.valign=valign
 	#if (line_to_parent):
 		#var p = get_parent();
 		#$LineMesh.visible = true;
