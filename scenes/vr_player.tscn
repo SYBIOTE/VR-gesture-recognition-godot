@@ -44,5 +44,8 @@ material/0 = null
 
 [node name="OQ_UI2DKeyboard" parent="OQ_ARVROrigin" instance=ExtResource( 2 )]
 transform = Transform( 2.9871, 0, 0, 0, 2.58078, 1.5041, 0, -1.5041, 2.58078, 0, 1.11125, -1.90525 )
+visible = false
+[connection signal="text_input_cancel" from="OQ_ARVROrigin/OQ_UI2DKeyboard" to="OQ_ARVROrigin/OQ_RightController/Q_recog_tracked" method="_on_OQ_UI2DKeyboard_text_input_cancel"]
 [connection signal="text_input_cancel" from="OQ_ARVROrigin/OQ_UI2DKeyboard" to="OQ_ARVROrigin/OQ_LeftController/Q_recog_tracked" method="_on_OQ_UI2DKeyboard_text_input_cancel"]
+[connection signal="text_input_enter" from="OQ_ARVROrigin/OQ_UI2DKeyboard" to="OQ_ARVROrigin/OQ_RightController/Q_recog_tracked" method="_on_OQ_UI2DKeyboard_text_input_enter"]
 [connection signal="text_input_enter" from="OQ_ARVROrigin/OQ_UI2DKeyboard" to="OQ_ARVROrigin/OQ_LeftController/Q_recog_tracked" method="_on_OQ_UI2DKeyboard_text_input_enter"]

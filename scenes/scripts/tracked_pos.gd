@@ -1,14 +1,127 @@
 extends Position3D
+
+#############################################################################
+#the interface starts here
+#############################################################################
+# tracked pos should always be a direct child of an ARVR contoller node
+# trigger button pressed tarts tracking, release stops tracking 
+# when u press trigger your points get stored into an array , 
+# sent to recognizer
+# ________________________________
+# if u press add template
+# when u press trigger your points get stored into an array , 
+# are made into points
+# sent to add template
+#_________________________________
+# delete template deletes all templates
+enum ACTION{
+	RECOGNIZE,
+	ADD,
+	IDLE}
+var action=["recognize","add","idle"]
+var track_button = vr.CONTROLLER_BUTTON.INDEX_TRIGGER 
+var user_state=ACTION.IDLE
+var add_name
+var controller : ARVRController = null
+var keyboard
+var type_count=1
+export var custom_names : bool
+export var ignore_Y_orientation : bool = true
+var add_mode=false
+onready var state_info = $OQ_VisibilityToggle/OQ_UILabel
+onready var result_info=$OQ_VisibilityToggle/OQ_UILabel2
+onready var ui_canvas = $OQ_VisibilityToggle/OQ_UI2DCanvas
+var cancel
+var point_array=[]
+func result(result):
+	result_info.set_label_text("matched with " + str(result[0]) +"\n score " +str(result[1]))
+func _ready():
+	controller = get_parent();
+	#gets parent as ARVR contoller and sets it to controller needed for button press recong
+	# can be modified 
+	if controller==vr.leftController:
+		rotate_y(deg2rad(45))
+	elif controller==vr.rightController:
+		rotate_y(deg2rad(-45))
+	keyboard=controller.get_parent().get_node("OQ_UI2DKeyboard") 
+	if keyboard != null:
+		keyboard.visible=false
+func _physics_process(delta):
+	var click = controller._button_pressed(track_button)
+	var release = controller._button_just_released(track_button)
+	state_info.set_label_text("state ="+ action[user_state]   + "\n add mode =" + str(add_mode))
+	var id_count=0
+	match user_state:
+		ACTION.IDLE:
+			if click:
+				if add_mode:
+					user_state=ACTION.ADD
+				else:
+					user_state=ACTION.RECOGNIZE
+		ACTION.RECOGNIZE:
+			point_array.append(make_point(global_transform,controller.controller_id))
+			if release:
+				var result=recognize(point_array)
+				#vr_log_info("result"+str(result[0])+" score "+str(result[1]))
+				result(result)
+				point_array.clear()
+				user_state=ACTION.IDLE
+				#stop tracking ,recogize pool
+		ACTION.ADD:
+			point_array.append(make_point(global_transform,controller.controller_id))
+			state_info.set_label_text("state =" + "\n add mode =" +  "\n" + str(add_mode)+ action[user_state] )
+			if release:
+				#vr_log_info(" add_name = "+ add_name)
+				result_info.set_label_text("added "+ add_name)
+				add_gesture(add_name,point_array)
+				point_array.clear()
+				user_state=ACTION.IDLE
+				add_mode=false
+				add_name=null
+func _on_add_pressed():
+	if keyboard==null and !custom_names:
+		add_mode=true
+		add_name="template " + str(type_count)
+		result_info.set_label_text("make movement")
+	else:
+		set_physics_process(false)
+		keyboard._text_edit.grab_focus()
+		result_info.set_label_text("add name")
+		keyboard.visible=true
+func _on_delete_pressed():
+	keyboard._text_edit.grab_focus()
+	type_count=1
+	result_info.set_label_text("all gestures \n deleted")
+	delete_gesture()
+func _on_cancel_pressed():
+	if add_mode:
+		add_mode=false
+		result_info.set_label_text("cancelled for \n this hand")
+func _on_OQ_UI2DKeyboard_text_input_enter(string):
+	result_info.set_label_text("make movement")
+	add_mode=true
+	add_name=keyboard._text_edit.text
+	keyboard.visible=false
+	set_physics_process(true)
+func _on_OQ_UI2DKeyboard_text_input_cancel():
+	keyboard.visible=false
+	set_physics_process(true)
+
+
 #############################################################################
 #the main P recognizer code is here
 #############################################################################
 const NumPoints = 32
+var p_c = [] # stored templates
 func make_point(vec,ID):
 	var point = []
 	point.resize(2)
 	if vec is Vector3:
 		point[0]=vec
 	if vec is Transform:
+		if ignore_Y_orientation:
+			vec.origin.x=vec.origin.x*cos(vr.vrOrigin.rotation.y)-vec.origin.z*sin(vr.vrOrigin.rotation.y)
+			vec.origin.z=vec.origin.z*cos(vr.vrOrigin.rotation.y)+vec.origin.x*sin(vr.vrOrigin.rotation.y)
 		point[0]=vec.origin
 	point[1]=ID
 	return point
@@ -78,7 +191,7 @@ func translateto(p):
 	var n_p=[]
 	var c = centroid(p)
 	for i in range(p.size()):
-		n_p.append(make_point(p[i][0]-c[0],p[i][1]))
+		n_p.append(make_point(p[i][0]+-c[0],p[i][1]))
 	return n_p
 func centroid(p):
 	var vec= Vector3()
@@ -86,7 +199,6 @@ func centroid(p):
 		vec+=p[i][0]
 	vec/=p.size()
 	return make_point(vec,controller.controller_id)
-var p_c = [] # stored templates
 func recognize(points):
 	var candidate = make_cloud("",points)
 #	display_cloud("candidate", candidate)
@@ -157,113 +269,3 @@ func cldd(a,b,start):
 	return sum
 func distance(a,b):
 	return (sqrt(pow(b.x-a.x,2)+pow(b.y-a.y,2)+pow(b.z-a.z,2)))
-#############################################################################
-#the interface starts here
-#############################################################################
-# tracked pos should always be a direct child of an ARVR contoller node
-# trigger button pressed tarts tracking, release stops tracking 
-# when u press trigger your points get stored into an array , 
-# sent to recognizer
-# ________________________________
-# if u press add template
-# when u press trigger your points get stored into an array , 
-# are made into points
-# sent to add template
-#_________________________________
-# delete template deletes all templates
-enum ACTION{
-	RECOGNIZE,
-	ADD,
-	IDLE}
-var action=["recognize","add","idle"]
-var track_button = vr.CONTROLLER_BUTTON.INDEX_TRIGGER 
-var user_state=ACTION.IDLE
-var add_name
-var controller : ARVRController = null;
-var keyboard
-var add_mode=false
-onready var state_info = $OQ_VisibilityToggle/OQ_UILabel
-onready var result_info=$OQ_VisibilityToggle/OQ_UILabel2
-var point_array=[]
-func result(result):
-	result_info.set_label_text("matched with " + str(result[0]) +"\n score " +str(result[1]))
-
-func _ready():
-	controller = get_parent();
-	#gets parent as ARVR contoller and sets it to controller needed for button press recong
-	# can be modified 
-	if controller==vr.leftController:
-		rotate_y(deg2rad(45))
-	elif controller==vr.rightController:
-		rotate_y(deg2rad(-45))
-	keyboard=controller.get_parent().get_node("OQ_UI2DKeyboard") 
-#	if keyboard != null:
-#		keyboard.visible=false
-	
-
-func _physics_process(delta):
-	var click = controller._button_pressed(track_button)
-	var release = controller._button_just_released(track_button)
-	state_info.set_label_text("state ="+ action[user_state]   + "\n add mode =" + str(add_mode))
-	var id_count=0
-	match user_state:
-		ACTION.IDLE:
-			if click:
-				if add_mode:
-					user_state=ACTION.ADD
-				else:
-					user_state=ACTION.RECOGNIZE
-		ACTION.RECOGNIZE:
-			point_array.append(make_point(global_transform,controller.controller_id))
-			if release:
-				var result=recognize(point_array)
-				#vr_log_info("result"+str(result[0])+" score "+str(result[1]))
-				result(result)
-				point_array.clear()
-				user_state=ACTION.IDLE
-				#stop tracking ,recogize pool
-		ACTION.ADD:
-			point_array.append(make_point(global_transform,controller.controller_id))
-			state_info.set_label_text("state =" + "\n add mode =" +  "\n" + str(add_mode)+ action[user_state] )
-			if release:
-				#vr_log_info(" add_name = "+ add_name)
-				result_info.set_label_text("added "+ add_name)
-				add_gesture(add_name,point_array)
-				point_array.clear()
-				user_state=ACTION.IDLE
-				add_mode=false
-				add_name=null
-		
-var type_count=1
-func _on_add_pressed():
-	if keyboard==null:
-		add_mode=true
-		add_name="template " + str(type_count)
-		result_info.set_label_text("make movement")
-		keyboard._text_edit.grab_focus()
-	else:
-		set_physics_process(false)
-		result_info.set_label_text("add name")
-		keyboard.visible=true
-
-
-func _on_delete_pressed():
-	keyboard._text_edit.grab_focus()
-	type_count=1
-	result_info.set_label_text("all gestures \n deleted")
-	delete_gesture()
-
-
-
-
-func _on_OQ_UI2DKeyboard_text_input_enter(string):
-	result_info.set_label_text("make movement")
-	add_mode=true
-	add_name=keyboard._text_edit.text
-	keyboard.visible=false
-	set_physics_process(true)
-
-
-func _on_OQ_UI2DKeyboard_text_input_cancel():
-	keyboard.visible=false
-	set_physics_process(true)
