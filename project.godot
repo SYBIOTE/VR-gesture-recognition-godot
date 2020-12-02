@@ -58,11 +58,16 @@ _global_script_class_icons={
 
 config/name="gesture_recog"
 run/main_scene="res://scenes/GameMain.tscn"
+boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon.png"
 
 [autoload]
 
 vr="*res://OQ_Toolkit/vr_autoload.gd"
+
+[debug]
+
+gdscript/completion/autocomplete_setters_and_getters=true
 
 [gdnative]
 
@@ -78,4 +83,5 @@ add_mode={
 
 [rendering]
 
+environment/default_clear_color=Color( 0, 0, 0, 1 )
 environment/default_environment="res://default_env.tres"

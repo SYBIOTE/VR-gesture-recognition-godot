@@ -75,10 +75,7 @@ func _create_input_event(b, pressed):
 	else:
 		scancode = OS.find_scancode_from_string(b.text);
 		unicode = key.ord_at(0);
-	
-
 	#print("  Event for " + key + ": scancode = " + str(scancode));
-	
 	var ev = InputEventKey.new();
 	ev.scancode = scancode;
 	ev.unicode = unicode;
@@ -94,7 +91,6 @@ var _last_button_down_hack = null;
 func _on_button_down(b):
 	if (b == _last_button_down_hack): return;
 	_last_button_down_hack = b;
-	
 	var ev = _create_input_event(b, true);
 	if (!ev): return;
 	get_tree().input_event(ev);
@@ -102,7 +98,6 @@ func _on_button_down(b):
 
 func _on_button_up(b):
 	_last_button_down_hack = null;
-	
 	var ev = _create_input_event(b, false);
 	if (!ev): return;
 	get_tree().input_event(ev);
@@ -111,7 +106,6 @@ func _on_button_up(b):
 func _create_button(_parent, text, x, y, w = 1, h = 1):
 	var b = _refrence_button.duplicate();
 	b.text = text;
-	
 	if (b.text.length() == 1):
 		var c = b.text.ord_at(0);
 		if (c >= 97 && c <= 122):
@@ -127,7 +121,6 @@ func _create_button(_parent, text, x, y, w = 1, h = 1):
 	
 	_parent.add_child(b);
 	return b;
-
 var _toggle_symbols_button : Button = null;
 var _shift_button : Button = null;
 var _backspace_button : Button = null;

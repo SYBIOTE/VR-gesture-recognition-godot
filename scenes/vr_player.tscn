@@ -25,9 +25,9 @@ transform = Transform( 0.0689877, -3.63798e-10, -1.79941e-08, -3.0559e-10, 0.068
 mesh = SubResource( 1 )
 material/0 = null
 
-[node name="Feature_UIRayCast" parent="OQ_ARVROrigin/OQ_LeftController" instance=ExtResource( 8 )]
+[node name="Q_recog_tracked" parent="OQ_ARVROrigin/OQ_LeftController" instance=ExtResource( 3 )]
 
-[node name="Q_recog_tracked2" parent="OQ_ARVROrigin/OQ_LeftController" instance=ExtResource( 3 )]
+[node name="Feature_UIRayCast" parent="OQ_ARVROrigin/OQ_LeftController" instance=ExtResource( 8 )]
 
 [node name="OQ_RightController" parent="OQ_ARVROrigin" instance=ExtResource( 1 )]
 
@@ -36,11 +36,13 @@ transform = Transform( 0.0689877, -3.63798e-10, -1.79941e-08, -3.0559e-10, 0.068
 mesh = SubResource( 1 )
 material/0 = null
 
-[node name="Q_recog_tracked2" parent="OQ_ARVROrigin/OQ_RightController" instance=ExtResource( 3 )]
+[node name="Q_recog_tracked" parent="OQ_ARVROrigin/OQ_RightController" instance=ExtResource( 3 )]
 
 [node name="Feature_UIRayCast" parent="OQ_ARVROrigin/OQ_RightController" instance=ExtResource( 8 )]
 
 [node name="Locomotion_Stick" parent="OQ_ARVROrigin" instance=ExtResource( 12 )]
 
-[node name="OQ_UI2DKeyboard" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.59352, -0.947042 )
+[node name="OQ_UI2DKeyboard" parent="OQ_ARVROrigin" instance=ExtResource( 2 )]
+transform = Transform( 2.9871, 0, 0, 0, 2.58078, 1.5041, 0, -1.5041, 2.58078, 0, 1.11125, -1.90525 )
+[connection signal="text_input_cancel" from="OQ_ARVROrigin/OQ_UI2DKeyboard" to="OQ_ARVROrigin/OQ_LeftController/Q_recog_tracked" method="_on_OQ_UI2DKeyboard_text_input_cancel"]
+[connection signal="text_input_enter" from="OQ_ARVROrigin/OQ_UI2DKeyboard" to="OQ_ARVROrigin/OQ_LeftController/Q_recog_tracked" method="_on_OQ_UI2DKeyboard_text_input_enter"]

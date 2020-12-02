@@ -6,7 +6,7 @@
 [ext_resource path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DCanvas.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/fonts/Square.ttf" type="DynamicFontData" id=7]
 
-[sub_resource type="StyleBoxFlat" id=5]
+[sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.0470588, 0.756863, 0.00784314, 1 )
 
 [sub_resource type="DynamicFont" id=2]
@@ -46,7 +46,7 @@ margin_left = 0.511997
 margin_top = 0.199999
 margin_right = 0.511993
 margin_bottom = 0.199982
-custom_styles/normal = SubResource( 5 )
+custom_styles/normal = SubResource( 1 )
 custom_fonts/font = SubResource( 2 )
 text = "ADD"
 __meta__ = {

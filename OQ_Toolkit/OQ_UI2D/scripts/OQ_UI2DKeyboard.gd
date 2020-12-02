@@ -29,6 +29,6 @@ func _ready():
 	
 	if (show_text_input):
 		$OQ_UI2DCanvas_TextInput.visible = true;
-		_text_edit.grab_focus();
+		_text_edit.grab_focus()
 	else:
 		$OQ_UI2DCanvas_TextInput.visible = false; # ?? maybe delte the node if not used

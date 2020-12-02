@@ -2,7 +2,6 @@ extends Position3D
 #############################################################################
 #the main P recognizer code is here
 #############################################################################
-signal result_send
 const NumPoints = 32
 func make_point(vec,ID):
 	var point = []
@@ -181,6 +180,7 @@ var track_button = vr.CONTROLLER_BUTTON.INDEX_TRIGGER
 var user_state=ACTION.IDLE
 var add_name
 var controller : ARVRController = null;
+var keyboard
 var add_mode=false
 onready var state_info = $OQ_VisibilityToggle/OQ_UILabel
 onready var result_info=$OQ_VisibilityToggle/OQ_UILabel2
@@ -190,14 +190,16 @@ func result(result):
 
 func _ready():
 	controller = get_parent();
+	#gets parent as ARVR contoller and sets it to controller needed for button press recong
+	# can be modified 
 	if controller==vr.leftController:
 		rotate_y(deg2rad(45))
 	elif controller==vr.rightController:
 		rotate_y(deg2rad(-45))
-	#gets parent as ARVR contoller and sets it to controller needed for button press recong
-	# can be modified 
+	keyboard=controller.get_parent().get_node("OQ_UI2DKeyboard") 
+#	if keyboard != null:
+#		keyboard.visible=false
 	
-	# current path to the label can be modified 
 
 func _physics_process(delta):
 	var click = controller._button_pressed(track_button)
@@ -225,22 +227,43 @@ func _physics_process(delta):
 			state_info.set_label_text("state =" + "\n add mode =" +  "\n" + str(add_mode)+ action[user_state] )
 			if release:
 				#vr_log_info(" add_name = "+ add_name)
+				result_info.set_label_text("added "+ add_name)
 				add_gesture(add_name,point_array)
-#				display_templates()
 				point_array.clear()
 				user_state=ACTION.IDLE
 				add_mode=false
 				add_name=null
-var id_count=1
+		
+var type_count=1
 func _on_add_pressed():
-	add_mode=true
-	add_name="type " + str(id_count)
-	id_count+=1
-	result_info.set_label_text(add_name + " added")
+	if keyboard==null:
+		add_mode=true
+		add_name="template " + str(type_count)
+		result_info.set_label_text("make movement")
+		keyboard._text_edit.grab_focus()
+	else:
+		set_physics_process(false)
+		result_info.set_label_text("add name")
+		keyboard.visible=true
+
 
 func _on_delete_pressed():
-	result_info.set_label_text("all gestures deleted")
+	keyboard._text_edit.grab_focus()
+	type_count=1
+	result_info.set_label_text("all gestures \n deleted")
 	delete_gesture()
-	id_count=1
 
 
+
+
+func _on_OQ_UI2DKeyboard_text_input_enter(string):
+	result_info.set_label_text("make movement")
+	add_mode=true
+	add_name=keyboard._text_edit.text
+	keyboard.visible=false
+	set_physics_process(true)
+
+
+func _on_OQ_UI2DKeyboard_text_input_cancel():
+	keyboard.visible=false
+	set_physics_process(true)
