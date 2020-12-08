@@ -191,7 +191,7 @@ func translateto(p):
 	var n_p=[]
 	var c = centroid(p)
 	for i in range(p.size()):
-		n_p.append(make_point(p[i][0]+-c[0],p[i][1]))
+		n_p.append(make_point(p[i][0]-c[0],p[i][1]))
 	return n_p
 func centroid(p):
 	var vec= Vector3()
@@ -258,14 +258,14 @@ func cldd(a,b,start):
 					_min=d
 					u=j
 		matched[u]=true
-		var w= 1-(((i-start+n)%n))/n
-		sum += w*_min
+		var w= 1-(((i-start+n)%n))/n #weight for the point number (decreases as the number increases)
+		sum += w*_min # a sum is created 
 		i = (i + 1) % n
 		if i==start:
 			break
 	
 #	#vr_log_info("cloud_calculation for m"+str((m%2)+1)+" = "+str(sum))
-	m+=1
+#	m+=1
 	return sum
 func distance(a,b):
 	return (sqrt(pow(b.x-a.x,2)+pow(b.y-a.y,2)+pow(b.z-a.z,2)))
