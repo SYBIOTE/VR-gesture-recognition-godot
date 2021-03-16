@@ -63,7 +63,7 @@
         {
             "mimeType" : "image/png",
             "name" : "OculusQuestTouchControllerTexture",
-            "uri" : "OculusQuestTouchControllerTexture_Color.png"
+            "uri" : "OculusQuestTouchControllerTexture.png"
         }
     ],
     "accessors" : [

@@ -1,5 +1,6 @@
 extends Position3D
-
+#use this one for testing gameplay in headset 
+#cuts out the functionality to add any templates
 #############################################################################
 #the interface starts here
 #############################################################################
@@ -16,7 +17,6 @@ extends Position3D
 # delete template deletes all templates
 enum ACTION{
 	RECOGNIZE,
-	ADD,
 	IDLE}
 var action=["recognize","add","idle"]
 var track_button = vr.CONTROLLER_BUTTON.INDEX_TRIGGER 
@@ -25,89 +25,43 @@ var add_name
 var controller : ARVRController = null
 var keyboard
 var type_count=1
-export var custom_names : bool
 export var ignore_Y_orientation : bool = true
-var add_mode=false
-onready var state_info = $OQ_VisibilityToggle/OQ_UILabel
-onready var result_info=$OQ_VisibilityToggle/OQ_UILabel2
-onready var ui_canvas = $OQ_VisibilityToggle/OQ_UI2DCanvas
+enum TRACKING{Buttons,Velocity}
+export (TRACKING) var Tracking_type
+var action_manager
 var cancel
 var point_array=[]
-func result(result):
-	result_info.set_label_text("matched with " + str(result[0]) +"\n score " +str(result[1]))
+
+
 func _ready():
+	print("ready")
 	controller = get_parent();
 	#gets parent as ARVR contoller and sets it to controller needed for button press recong
 	# can be modified 
+	action_manager = controller.get_parent().get_parent().get_node("action_manager")
 	if controller==vr.leftController:
-		rotate_y(deg2rad(45))
+		transform.origin=Vector3(-0.02,-0.045,0.03)
 	elif controller==vr.rightController:
-		rotate_y(deg2rad(-45))
-	keyboard=controller.get_parent().get_node("OQ_UI2DKeyboard") 
-	if keyboard != null:
-		keyboard.visible=false
-func _physics_process(delta):
+		transform.origin=Vector3(0.02,-0.045,0.03)
+	p_c = load_p_c_data()
+	vr.log_info("loaded templates are "+ str(p_c))
+func _physics_process(_delta):
 	var click = controller._button_pressed(track_button)
 	var release = controller._button_just_released(track_button)
-	state_info.set_label_text("state ="+ action[user_state]   + "\n add mode =" + str(add_mode))
-	var id_count=0
+	var controller_vel = controller.get_linear_velocity().length()
 	match user_state:
 		ACTION.IDLE:
-			if click:
-				if add_mode:
-					user_state=ACTION.ADD
-				else:
-					user_state=ACTION.RECOGNIZE
+			if(Tracking_type ==TRACKING.Buttons and click) or (Tracking_type ==TRACKING.Velocity and controller_vel>=1):
+				user_state=ACTION.RECOGNIZE
 		ACTION.RECOGNIZE:
 			point_array.append(make_point(global_transform,controller.controller_id))
-			if release:
+			if(Tracking_type ==TRACKING.Buttons and release) or (Tracking_type ==TRACKING.Velocity and controller_vel<1):
 				var result=recognize(point_array)
 				#vr_log_info("result"+str(result[0])+" score "+str(result[1]))
-				result(result)
+				action_manager.recognise_action(result,controller.controller_id)
 				point_array.clear()
 				user_state=ACTION.IDLE
 				#stop tracking ,recogize pool
-		ACTION.ADD:
-			point_array.append(make_point(global_transform,controller.controller_id))
-			state_info.set_label_text("state =" + "\n add mode =" +  "\n" + str(add_mode)+ action[user_state] )
-			if release:
-				#vr_log_info(" add_name = "+ add_name)
-				result_info.set_label_text("added "+ add_name)
-				add_gesture(add_name,point_array)
-				point_array.clear()
-				user_state=ACTION.IDLE
-				add_mode=false
-				add_name=null
-func _on_add_pressed():
-	if keyboard==null and !custom_names:
-		add_mode=true
-		add_name="template " + str(type_count)
-		result_info.set_label_text("make movement")
-	else:
-		set_physics_process(false)
-		keyboard._text_edit.grab_focus()
-		result_info.set_label_text("add name")
-		keyboard.visible=true
-func _on_delete_pressed():
-	keyboard._text_edit.grab_focus()
-	type_count=1
-	result_info.set_label_text("all gestures \n deleted")
-	delete_gesture()
-func _on_cancel_pressed():
-	if add_mode:
-		add_mode=false
-		result_info.set_label_text("cancelled for \n this hand")
-func _on_OQ_UI2DKeyboard_text_input_enter(string):
-	result_info.set_label_text("make movement")
-	add_mode=true
-	add_name=keyboard._text_edit.text
-	keyboard.visible=false
-	set_physics_process(true)
-func _on_OQ_UI2DKeyboard_text_input_cancel():
-	keyboard.visible=false
-	set_physics_process(true)
-
-
 #############################################################################
 #the main P recognizer code is here
 #############################################################################
@@ -191,7 +145,7 @@ func translateto(p):
 	var n_p=[]
 	var c = centroid(p)
 	for i in range(p.size()):
-		n_p.append(make_point(p[i][0]-c[0],p[i][1]))
+		n_p.append(make_point(p[i][0]+-c[0],p[i][1]))
 	return n_p
 func centroid(p):
 	var vec= Vector3()
@@ -220,17 +174,7 @@ func recognize(points):
 		#vr_log_info("made score")
 		var n=p_c[u][0]
 		return [n,b]
-func add_gesture(nme, pts):
-	p_c.append(make_cloud(nme,pts))
-	var num=0
-	for i in p_c:
-		if i[0]==nme:
-			num+=1
-	return num
-func delete_gesture():
-	p_c.clear()
 func cldmatch(candidate, template, minsof):
-	var n = 32
 	var step = floor(pow(candidate.size(),1-.5))
 	for i in range(0,candidate.size(),step):
 		var m1=cldd(candidate[1],template[1],i)
@@ -258,14 +202,29 @@ func cldd(a,b,start):
 					_min=d
 					u=j
 		matched[u]=true
-		var w= 1-(((i-start+n)%n))/n #weight for the point number (decreases as the number increases)
-		sum += w*_min # a sum is created 
+		var w= 1-(((i-start+n)%n))/n
+		sum += w*_min
 		i = (i + 1) % n
 		if i==start:
 			break
 	
 #	#vr_log_info("cloud_calculation for m"+str((m%2)+1)+" = "+str(sum))
-#	m+=1
+	m+=1
 	return sum
 func distance(a,b):
 	return (sqrt(pow(b.x-a.x,2)+pow(b.y-a.y,2)+pow(b.z-a.z,2)))
+#############################################################################
+#save load and clear
+#############################################################################
+var save_p_c_data = "user://p_c_data.dat"
+func load_p_c_data():
+	var file = File.new()
+	var p_c_data = null
+	if file.file_exists(save_p_c_data):
+		var error = file.open(save_p_c_data, File.READ)
+		print(error)
+		if error == OK:
+			p_c_data = file.get_var()
+			file.close()
+	return p_c_data
+

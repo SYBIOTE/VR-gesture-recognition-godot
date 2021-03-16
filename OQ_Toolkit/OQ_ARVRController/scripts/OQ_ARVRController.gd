@@ -79,7 +79,6 @@ func _ready():
 	# check if we already have one of the models attached so autoload still works
 	_controller_model = find_node("Feature_ControllerModel*", false, false);
 	_hand_model = find_node("Feature_HandModel*", false, false);
-
 	# heuristic to detect if we want hand behaviour
 	if (_hand_model != null): is_hand = true;
 
@@ -166,14 +165,16 @@ func _auto_update_controller_model():
 		is_hand = false;
 		if (_hand_model != null): _hand_model.visible = false;
 		if (autoload_model && _controller_model == null):
-			_controller_model = load(vr.oq_base_dir + "/OQ_ARVRController/Feature_ControllerModel_Left.tscn").instance();
+#			_controller_model = load(vr.oq_base_dir+ "/OQ_ARVRController/Feature_ControllerModel_Left.tscn").instance();
+			_controller_model = load("res://addons/godot-xr-tools/assets/LeftHand.tscn").instance();
 			add_child(_controller_model);
 		if (_controller_model != null): _controller_model.visible = true;
 	elif (controller_id == 2):
 		is_hand = false;
 		if (_hand_model != null): _hand_model.visible = false;
 		if (autoload_model && _controller_model == null):
-			_controller_model = load(vr.oq_base_dir + "/OQ_ARVRController/Feature_ControllerModel_Right.tscn").instance();
+#			_controller_model = load(vr.oq_base_dir+ "/OQ_ARVRController/Feature_ControllerModel_Right.tscn").instance();
+			_controller_model = load("res://addons/godot-xr-tools/assets/RightHand.tscn").instance();
 			add_child(_controller_model);
 		if (_controller_model != null): _controller_model.visible = true;
 	else:

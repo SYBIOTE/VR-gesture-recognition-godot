@@ -4,7 +4,7 @@
 extends Node
 
 var room_list = [
-	"res://scenes/main.tscn"
+	"res://scenes/game/main.tscn"
 	]
 
 var current_room = 0;
@@ -33,7 +33,7 @@ func _ready():
 	#vr.switch_scene("res://demo_games/BeepSaber/BeepSaber_Game.tscn");  return;
 
 	# Always advertise Godot a bit in the beginning
-	if (vr.inVR): vr.switch_scene("res://scenes/GodotSplash.tscn", 0.0, 0.0);
+	if (vr.inVR): vr.switch_scene("res://scenes/game/startup/GodotSplash.tscn", 0.0, 0.0);
 	
 	vr.switch_scene(room_list[current_room], 0.1, 5.0);
 

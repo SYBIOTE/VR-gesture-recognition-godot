@@ -4,7 +4,7 @@ export var active := true;
 export var ui_raycast_length := 3.0;
 export var ui_mesh_length := 1.0;
 
-export var adjust_left_right := true;
+export var adjust_left_right := false;
 export(vr.CONTROLLER_BUTTON) var ui_raycast_visible_button := vr.CONTROLLER_BUTTON.TOUCH_INDEX_TRIGGER;
 export(vr.CONTROLLER_BUTTON) var ui_raycast_click_button := vr.CONTROLLER_BUTTON.XA;
 
@@ -28,15 +28,18 @@ func _set_raycast_transform():
 		else:
 			ui_raycast_position.transform.basis = Basis(Vector3(deg2rad(-90),0,0));
 	else:
-		ui_raycast_position.transform.basis = Basis();
-		# center the ray cast better to the actual controller position
-		if (adjust_left_right):
-			ui_raycast_position.translation.y = -0.005;
-			ui_raycast_position.translation.z = -0.01;
-			if (controller.controller_id == 1):
-				ui_raycast_position.translation.x = -0.01;
-			if (controller.controller_id == 2):
-				ui_raycast_position.translation.x =  0.01;
+		var hands = controller._controller_model
+		if hands:
+			ui_raycast_position.transform.origin=hands.ui_pos.transform.origin
+#		ui_raycast_position.transform.basis = Basis();
+#		# center the ray cast better to the actual controller position
+#		if (adjust_left_right):
+#			ui_raycast_position.translation.y = -0.005;
+#			ui_raycast_position.translation.z = -0.01;
+#			if (controller.controller_id == 1):
+#				ui_raycast_position.translation.x = -0.01;
+#			if (controller.controller_id == 2):
+#				ui_raycast_position.translation.x =  0.01;
 		
 	
 		
@@ -86,7 +89,6 @@ func _ready():
 	ui_raycast_mesh.translation.z = -ui_mesh_length * 0.5;
 	ui_raycast_hitmarker.visible = false;
 	ui_raycast_mesh.visible = false;
-
 # we use the physics process here be in sync with the controller position
 func _physics_process(_dt):
 	if (!active): return;

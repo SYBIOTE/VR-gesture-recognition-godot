@@ -7,7 +7,6 @@ var scroll : ScrollContainer = null;
 func _ready():
 	
 	$OQ_UI2DCanvas.find_node("ReferenceRect", true, false).visible = true;
-
 	# we need to use find_node here since the OQ_UI2DCanvas will reparent the UI to the
 	# Viewport needed to render the UI to a texture;
 	log_label = $OQ_UI2DCanvas.find_node("LogLabel", true, false);

@@ -33,7 +33,6 @@ func _init_vr_log():
 		
 func _append_to_log(type, message):
 	if (_log_buffer.size() == 0): _init_vr_log();
-	
 	if _log_buffer_index >= 0 && _log_buffer[_log_buffer_index][1] == message:
 		_log_buffer[_log_buffer_index][2] += 1;
 	else:
@@ -168,7 +167,7 @@ enum VR_CONTROLLER_TYPE {
 	WEBXR
 }
 
-var AXIS := {
+const AXIS := {
 	None = -1,
 	
 	LEFT_JOYSTICK_X = 0,
@@ -182,7 +181,7 @@ var AXIS := {
 	RIGHT_GRIP_TRIGGER = 3 + 16,
 }
 
-var CONTROLLER_AXIS := {
+const CONTROLLER_AXIS := {
 	None = -1,
 	
 	JOYSTICK_X = 0,
@@ -192,7 +191,7 @@ var CONTROLLER_AXIS := {
 }
 
 # the individual buttons directly identified left or right controller
-var BUTTON := {
+const BUTTON := {
 	None = -1,
 
 	Y = 1,
@@ -226,9 +225,8 @@ var BUTTON := {
 
 
 # Button list mapping to both controllers (needed for actions assigned to specific controllers instead of global)
-var CONTROLLER_BUTTON := {
+const CONTROLLER_BUTTON := {
 	None = -1,
-
 	YB = 1,
 	GRIP_TRIGGER = 2, # grip trigger pressed over threshold
 	ENTER = 3, # Menu Button on left controller

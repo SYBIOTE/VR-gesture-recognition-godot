@@ -57,7 +57,7 @@ _global_script_class_icons={
 [application]
 
 config/name="gesture_recog"
-run/main_scene="res://scenes/GameMain.tscn"
+run/main_scene="res://scenes/game/startup/GameMain.tscn"
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon.png"
 

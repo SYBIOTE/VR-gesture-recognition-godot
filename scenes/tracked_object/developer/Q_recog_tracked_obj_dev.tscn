@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=2]
 
-[ext_resource path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DLabel.tscn" type="PackedScene" id=1]
-[ext_resource path="res://OQ_Toolkit/OQ_Helpers/OQ_VisibilityToggle.tscn" type="PackedScene" id=2]
-[ext_resource path="res://scenes/scripts/tracked_pos.gd" type="Script" id=3]
+[ext_resource path="res://scenes/tracked_object/developer/tracked_pos_dev.gd" type="Script" id=1]
+[ext_resource path="res://fonts/Square.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DLabel.tscn" type="PackedScene" id=3]
 [ext_resource path="res://OQ_Toolkit/OQ_UI2D/OQ_UI2DCanvas.tscn" type="PackedScene" id=4]
-[ext_resource path="res://scenes/fonts/Square.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://OQ_Toolkit/OQ_Helpers/OQ_VisibilityToggle.tscn" type="PackedScene" id=5]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.027451, 0.298039, 0, 1 )
@@ -14,7 +14,7 @@ bg_color = Color( 0.0470588, 0.756863, 0.00784314, 1 )
 
 [sub_resource type="DynamicFont" id=3]
 size = 100
-font_data = ExtResource( 7 )
+font_data = ExtResource( 2 )
 
 [sub_resource type="StyleBoxFlat" id=4]
 bg_color = Color( 0.380392, 0, 0, 1 )
@@ -24,7 +24,7 @@ bg_color = Color( 1, 0, 0, 1 )
 
 [sub_resource type="DynamicFont" id=6]
 size = 100
-font_data = ExtResource( 7 )
+font_data = ExtResource( 2 )
 
 [sub_resource type="StyleBoxFlat" id=7]
 bg_color = Color( 0, 0.0980392, 0.32549, 1 )
@@ -34,12 +34,14 @@ bg_color = Color( 0.0196078, 0, 0.745098, 1 )
 
 [sub_resource type="DynamicFont" id=9]
 size = 70
-font_data = ExtResource( 7 )
+font_data = ExtResource( 2 )
 
-[node name="Q_recog_tracked" type="Position3D"]
-script = ExtResource( 3 )
+[node name="Q_recog_tracked_dev" type="Position3D"]
+script = ExtResource( 1 )
+Mode = 1
+Tracking_type = 1
 
-[node name="OQ_VisibilityToggle" parent="." instance=ExtResource( 2 )]
+[node name="OQ_VisibilityToggle" parent="." instance=ExtResource( 5 )]
 transform = Transform( 0.675199, 0, 0, 0, 0.647651, 0.190897, 0, -0.190897, 0.647652, 0, 0.176689, -0.0791197 )
 
 [node name="OQ_UI2DCanvas" parent="OQ_VisibilityToggle" instance=ExtResource( 4 )]
@@ -95,14 +97,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="OQ_UILabel" parent="OQ_VisibilityToggle" instance=ExtResource( 1 )]
+[node name="OQ_UILabel" parent="OQ_VisibilityToggle" instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 5.96046e-08, 0, 1, 2.98023e-08, 0, -5.96046e-08, 1, -0.173725, -0.0274144, -7.45058e-09 )
 text = ""
 valign = 3
 background_color = Color( 0, 0, 0, 0 )
 transparent = true
 
-[node name="OQ_UILabel2" parent="OQ_VisibilityToggle" instance=ExtResource( 1 )]
+[node name="OQ_UILabel2" parent="OQ_VisibilityToggle" instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 1.19209e-07, 0, 1, 2.98023e-08, 0, -5.96046e-08, 1, 0.178948, -0.0274144, -7.45058e-09 )
 text = ""
 align = 2

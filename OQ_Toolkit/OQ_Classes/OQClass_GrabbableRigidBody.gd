@@ -25,7 +25,6 @@ var _cached_angular_velocity := Vector3(0,0,0);
 func grab_init(node, grab_type: int) -> void:
 	target_node = node
 	_grab_type = grab_type
-	
 	is_grabbed = true
 	sleeping = false;
 	_orig_can_sleep = can_sleep;
@@ -35,7 +34,7 @@ func _release():
 	is_grabbed = false
 	target_node = null
 	can_sleep = _orig_can_sleep;
-
+	$destroy.start()
 
 func grab_release() -> void:
 	if _grab_type == vr.GrabTypes.KINEMATIC:

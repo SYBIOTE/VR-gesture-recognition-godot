@@ -12,7 +12,7 @@ var grab_mesh : MeshInstance = null;
 var held_object_initial_parent : Node
 var last_gesture := "";
 
-export(vr.CONTROLLER_BUTTON) var grab_button = vr.CONTROLLER_BUTTON.GRIP_TRIGGER;
+export(vr.CONTROLLER_BUTTON)var grab_button := vr.CONTROLLER_BUTTON.GRIP_TRIGGER;
 export(String) var grab_gesture := "Fist"
 export(int, LAYERS_3D_PHYSICS) var grab_layer := 1
 export (vr.GrabTypes) var grab_type := vr.GrabTypes.HINGEJOINT;
