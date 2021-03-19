@@ -27,3 +27,10 @@ the next tracked movement will be made into a template
 the cancel button allows the user to exit add mode
 
 the delete button deletes all templates
+
+the source code, during development there are two nodes , 
+ p_recog_tracked object dev
+ and
+ p_recog_tracked object game
+dev allows for adding and subtracting templates and storing them into a file for further use
+game only allows you to load prexisting templates saved by dev and utilize them 
