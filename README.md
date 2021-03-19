@@ -28,7 +28,7 @@ the cancel button allows the user to exit add mode
 
 the delete button deletes all templates
 
-the source code, during development there are two nodes , 
+in the the source code, there are two nodes , 
  p_recog_tracked object dev
  and
  p_recog_tracked object game
