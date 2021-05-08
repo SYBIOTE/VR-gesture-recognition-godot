@@ -144,8 +144,8 @@ func make_point(vec,ID):
 		point[0]=vec
 	if vec is Transform:
 		if ignore_Y_orientation:
-			vec.origin.x=vec.origin.x*cos(vr.vrOrigin.rotation.y)-vec.origin.z*sin(vr.vrOrigin.rotation.y)
-			vec.origin.z=vec.origin.z*cos(vr.vrOrigin.rotation.y)+vec.origin.x*sin(vr.vrOrigin.rotation.y)
+#			vec.origin = vr.vrOrigin.global_transform.origin + (vec.origin - vr.vrOrigin.global_transform.origin).rotated(Vector3.DOWN,vr.vrOrigin.rotation.y)
+			vec.origin = vr.vrCamera.global_transform.origin + (vec.origin - vr.vrCamera.global_transform.origin).rotated(Vector3.DOWN,vr.vrCamera.rotation.y)
 		point[0]=vec.origin
 	point[1]=ID
 	return point
